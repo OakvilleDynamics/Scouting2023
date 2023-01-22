@@ -2,9 +2,8 @@ name: Android CI
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+    - '*'
 
 jobs:
   build:
@@ -24,3 +23,11 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Cache build files
+      id: cache-build-files
+      uses: actions/cache@v2
+      with:
+      # android stores build files in app/build - currently in .gitignore so it's not stored from local machine build & tests
+        name: build-files
+        path: ~/app/build
+        key: ${{ runner.os }}-build-files
