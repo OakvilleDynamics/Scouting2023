@@ -23,7 +23,6 @@ jobs:
       run: ./gradlew build
 
     - name: Store apk artifacts
-      if: github.event_name == contains(github.ref, '/tags/v')
       uses: actions/upload-artifact@v2
       with:
         name: apk-files-${{ github.sha }}
