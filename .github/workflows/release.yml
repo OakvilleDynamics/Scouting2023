@@ -9,7 +9,7 @@ jobs:
       steps:
       - uses: actions/checkout@v2
         with:
-          name: build-files-${{ GITHUB_SHA }}
+          name: build-files-${{ github.sha }}
       
       - name: test release flow
         run: ls -lah ~/app/build
