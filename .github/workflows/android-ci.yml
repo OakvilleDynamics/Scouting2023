@@ -25,23 +25,9 @@ jobs:
       run: ./gradlew build
 
     - name: Store apk artifacts
+      if: github.event_name == contains(github.ref, '/tags/v')
       uses: actions/upload-artifact@v2
       with:
         name: apk-files-${{ github.sha }}
       # android stores build files in app/build - currently in .gitignore so it's not stored from local machine build & tests
         path: app/build/outputs/apk/release/
-
-  release:
-
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Pull artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: apk-files-${{ github.sha }}
-
-    - name: test for artifacts
-      run: ls -lah
