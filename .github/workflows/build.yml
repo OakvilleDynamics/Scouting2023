@@ -27,8 +27,8 @@ jobs:
     - name: debug path
       run: pwd
 
-    - name: list files in path
-      run: ls -lah
+    - name: list files in app
+      run: ls -lah app/
 
     - name: Store build artifacts
       uses: actions/upload-artifact@v2
