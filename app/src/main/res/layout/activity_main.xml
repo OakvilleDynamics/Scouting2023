@@ -505,7 +505,9 @@
         android:layout_marginStart="12dp"
         android:text="Submit"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/endgameSpinner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         tools:layout_editor_absoluteY="570dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
