@@ -27,6 +27,6 @@ jobs:
     - name: Store build artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: build-files-${{GITHUB_SHA}}
+        name: build-files-${{ GITHUB_SHA }}
       # android stores build files in app/build - currently in .gitignore so it's not stored from local machine build & tests
         path: ~/app/build
