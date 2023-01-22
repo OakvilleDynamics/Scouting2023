@@ -22,14 +22,22 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
+    
+    - name: Cache build files
+      id: cache-build
+      uses: actions/cache@v3
+      with:
+        path: app/build
+
 
   release:
     runs-on: ubuntu-latest
     needs: build
-    steps:
+    steps:  
     - name: Store apk artifacts
+      if: steps.cache-build.outputs.cache-hit != 'true'
       uses: actions/upload-artifact@v2
       with:
         name: apk-files-${{ github.sha }}
       # android stores build files in app/build - currently in .gitignore so it's not stored from local machine build & tests
-        path: app/build/outputs/apk/release/
+        path: app/build/outputs/apk/release/*.apk
