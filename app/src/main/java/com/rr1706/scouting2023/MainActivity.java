@@ -2,8 +2,6 @@ package com.rr1706.scouting2023;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
@@ -27,7 +25,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -48,12 +45,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-    ImageView btnPlus,btnMinus,data_submitted,rrlogo,cone0, cube0, cone1, cone2, cube1, cone3, cone4, cube2, cone5, cone6, cube3, cone7, cone8, cube4, cone9, cone10, cube5, cone11,both0,both1,both2,both3,both4,both5,both6,both7,both8;
+    ImageView data_submitted,rrlogo,cone0, cube0, cone1, cone2, cube1, cone3, cone4, cube2, cone5, cone6, cube3, cone7, cone8, cube4, cone9, cone10, cube5, cone11,both0,both1,both2,both3,both4,both5,both6,both7,both8;
     EditText name_input,round_input,team_input,notes;
     Spinner AutoEngage,EndgameEngage;
     Button PregameBtn,AutoChange,pregame_close,noShow,Red_Alliance,Blue_Alliance,sameScouter,submit,Gray_Box;
-    CheckBox teamAutofill;
-    TextView allianceText,missedScore,dummyTeam;
+    CheckBox teamAutofill,playedDefense;
+    TextView allianceText,dummyTeam,endgameHide;
     Switch robotError;
 
     int teleTop;
@@ -86,15 +83,13 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         dummyTeam = findViewById(R.id.dummyTeam);
         robotError = findViewById(R.id.robotError);
         submit = findViewById(R.id.submit);
-        missedScore = findViewById(R.id.missedScore);
-        btnPlus = findViewById(R.id.btnPlus);
-        btnMinus = findViewById(R.id.btnMinus);
+        playedDefense = findViewById(R.id.playedDefense);
         data_submitted = findViewById(R.id.data_submitted);
         teamAutofill = findViewById(R.id.autoFill);
         sameScouter = findViewById(R.id.sameScouter);
@@ -106,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         EndgameEngage = findViewById(R.id.endgameSpinner);
         Gray_Box = findViewById(R.id.Gray_Box);
         PregameBtn= findViewById(R.id.pregameBtn);
+        endgameHide = findViewById(R.id.endgameTxt);
         AutoChange= findViewById(R.id.autoChange);
         Blue_Alliance = findViewById(R.id.Blue_Alliance);
         Red_Alliance = findViewById(R.id.Red_Alliance);
@@ -185,12 +181,14 @@ public class MainActivity extends AppCompatActivity {
 
         //Change From Auto To Teleop - Needs to disable the clicked ones in Auto when transitioning - Needs to reenable disabled if switch back to auto
         AutoChange.setOnClickListener(v->{
+            Log.e("VALUES:||", autoTop+","+autoMid+","+autoLow+","+teleTop+","+teleMid+","+teleLow);
             if(mode.equals("auto")) {
                 mode = "teleop";
                 submit.setVisibility(View.VISIBLE);
+                endgameHide.setVisibility(View.VISIBLE);
+                EndgameEngage.setVisibility(View.VISIBLE);
                 AutoChange.setText("TELEOP");
                 for(int i=0; i < grid.length; i++){
-                    Log.e(String.valueOf(i), Arrays.toString(grid[i]));
                     for(int j=0; j<grid[i].length; j++) {
                         if(grid[i][j] == 1) {
                             imArray[i][j].setEnabled(false);
@@ -203,8 +201,10 @@ public class MainActivity extends AppCompatActivity {
                 mode = "auto";
                 AutoChange.setText("AUTO");
                 submit.setVisibility(View.INVISIBLE);
+
+                endgameHide.setVisibility(View.INVISIBLE);
+                EndgameEngage.setVisibility(View.INVISIBLE);
                 for(int i=0; i < grid.length; i++){
-                    Log.e(String.valueOf(i), Arrays.toString(grid[i]));
                     for(int j=0; j<grid[i].length; j++) {
                         if(!imArray[i][j].isEnabled()) {
                             imArray[i][j].setEnabled(true);
@@ -309,18 +309,6 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         };
-        btnPlus.setOnClickListener(v -> {
-            if (missedIntake < 99) {
-                missedIntake++;
-            }
-            missedScore.setText(Integer.toString(missedIntake));
-        });
-        btnMinus.setOnClickListener(v -> {
-            if (missedIntake > 0) {
-                missedIntake--;
-            }
-            missedScore.setText(Integer.toString(missedIntake));
-        });
 
         Thread myThread = new Thread(myRunnable);
         myThread.start();
@@ -642,7 +630,7 @@ public class MainActivity extends AppCompatActivity {
                     myOutWriter.println("Tele Middle: " + teleMid);
                     myOutWriter.println("Tele Bottom: " + teleLow);
 
-                    myOutWriter.println("Missed Intakes: " + missedScore.getText().toString());
+                    myOutWriter.println("Played Defense: " + playedDefense.isChecked());
 
                     myOutWriter.println("Top Array: " + Arrays.toString(grid[0]));
                     myOutWriter.println("Middle Array: " + Arrays.toString(grid[1]));
@@ -650,6 +638,14 @@ public class MainActivity extends AppCompatActivity {
 
                     myOutWriter.println("Endgame: " + EndgameEngage.getSelectedItem());
                     myOutWriter.println("Notes: " + notes.getText());
+
+                    myOutWriter.println("Defense Played: ");
+                    myOutWriter.println("Defense Score: ");
+                    myOutWriter.println("Quickness Load: ");
+                    myOutWriter.println("Quickness Score: ");
+                    myOutWriter.println("Team Order: ");
+                    myOutWriter.println("Comments: ");
+
 
                     myOutWriter.flush();
                     myOutWriter.close();
@@ -722,7 +718,6 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0; i < imArray.length; i++){
             for(int j=0; j<imArray[i].length; j++) {
                 if(!imArray[i][j].isEnabled()) {
-                    Log.e(String.valueOf(i),String.valueOf(j));
                     imArray[i][j].setEnabled(true);
                 }
 
@@ -749,7 +744,7 @@ public class MainActivity extends AppCompatActivity {
         submit.setVisibility(View.INVISIBLE);
         mode = "auto";
         robotError.setChecked(false);
-        missedScore.setText("0");
+        playedDefense.setChecked(false);
         Pregame.setVisibility(View.VISIBLE);
         Gray_Box.setVisibility(View.VISIBLE);
         notes.setVisibility(View.INVISIBLE);
@@ -784,7 +779,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void arrayUpdate(int row, int column, int id) {
         //Determine Cone Cube or Both
-        ImageView image = (ImageView)findViewById(id);
+        ImageView[][] imArray =  {{cone0, cube0, cone1, cone2, cube1, cone3, cone4, cube2, cone5}, {cone6, cube3, cone7, cone8, cube4, cone9, cone10, cube5, cone11}, {both0, both1, both2, both3, both4, both5, both6, both7, both8}};
+        final AlertDialog.Builder popup = new AlertDialog.Builder(this);
+
+        final DialogInterface.OnClickListener AutoEnd = (dialog, which) -> {
+            if (which == DialogInterface.BUTTON_NEGATIVE) {
+                mode = "teleop";
+                submit.setVisibility(View.VISIBLE);
+                AutoChange.setText("TELEOP");
+                for(int i=0; i < grid.length; i++){
+                    for(int j=0; j<grid[i].length; j++) {
+                        if(grid[i][j] == 1) {
+                            imArray[i][j].setEnabled(false);
+                        }
+
+                    }
+                }
+            }
+        };
+
+
+        if ((autoTop + autoMid + autoLow >= 4) && Objects.equals(mode, "auto")) {
+            popup.setMessage("Are you supposed to be in Auto still?")
+                    .setPositiveButton("Yes",AutoEnd)
+                    .setNegativeButton("No",AutoEnd)
+                    .show();
+        }
+
+        ImageView image = findViewById(id);
         List<Integer> coneCol = Arrays.asList(0,2,3,5,6,8);
         if(row == 0) {
             if (grid[row][column] == 0) {
@@ -812,7 +834,11 @@ public class MainActivity extends AppCompatActivity {
                 grid[row][column] = 0;
 
                 if(Objects.equals(mode, "auto")) {
-                    autoTop -= 1;
+                    if(autoTop==0) {
+                        teleTop -= 1;
+                    } else {
+                        autoTop -= 1;
+                    }
                 } else {
                     teleTop -= 1;
                 }
@@ -844,7 +870,12 @@ public class MainActivity extends AppCompatActivity {
                 grid[row][column] = 0;
 
                 if(Objects.equals(mode, "auto")) {
-                    autoMid -= 1;
+                    if(autoMid==0) {
+                        teleMid -=1;
+                    } else {
+                        autoMid -= 1;
+                    }
+
                 } else {
                     teleMid -= 1;
                 }
@@ -865,7 +896,11 @@ public class MainActivity extends AppCompatActivity {
                 grid[row][column] = 0;
 
                 if(Objects.equals(mode, "auto")) {
-                    autoLow -= 1;
+                    if(autoLow==0) {
+                        teleLow -=1;
+                    } else {
+                        autoLow -= 1;
+                    }
                 } else {
                     teleLow -= 1;
                 }
@@ -873,6 +908,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+
     }
 
     @Override
