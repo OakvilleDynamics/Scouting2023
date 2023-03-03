@@ -1,4 +1,4 @@
-package com.rr1706.scouting2023;
+package com.scouting2023;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -153,7 +153,8 @@ public class MainActivity extends AppCompatActivity {
             teamAutofill.setChecked(true);
         }
 
-        tabletName = Settings.Secure.getString(getContentResolver(), "bluetooth_name");
+//        tabletName = Settings.Secure.getString(getContentResolver(), "bluetooth_name");
+        tabletName = "8179";
 
         switch (tabletName) {
             case "1706's 1st Fire":
@@ -172,6 +173,9 @@ public class MainActivity extends AppCompatActivity {
                 tabletnumber = 2;
                 break;
             case "1706's 7th Fire":
+                tabletnumber = 3;
+                break;
+            case "8719":
                 tabletnumber = 3;
                 break;
         }
